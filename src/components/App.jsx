@@ -1,97 +1,62 @@
-import React from 'react';
-import { ToastContainer } from 'react-toastify';
+import ContactList from './ContactList/ContactList';
+import Filter from './Filter/Filter';
+import ContactForm from './ContactForm/ContactForm';
 import { Container } from './App.styled';
-import SearchBar from './Searchbar/Searchbar';
-import ImageGallery from './ImageGallery/ImageGallery';
-import Loader from './Loader/Loader';
-import Button from './Button/Button';
-import { toast } from 'react-toastify';
+import { useState, useEffect } from 'react';
 
-class App extends React.Component {
-  state = {
-    image: [],
-    error: null,
-    status: 'idle',
-    page: 1,
-  };
+export default function App() {
+  const [contacts, setContacts] = useState(() => {
+    return JSON.parse(localStorage.getItem('contacts')) ?? [];
+  });
 
-  handleFormSubmit = imgName => {
-    if (this.state.imgName !== imgName) {
-      this.setState({
-        imgName: imgName,
-        page: 1,
-        image: [],
-      });
+  const [filter, setFilter] = useState('');
+
+  const formHandler = data => {
+    const addedName = contacts
+      .map(contact => contact.name.toLowerCase())
+      .includes(data.name.toLowerCase());
+    if (addedName) {
+      alert(`${data.name} is already in a list`);
+    } else {
+      setContacts(prevState => [...prevState, data]);
     }
   };
 
-  loadMore = () => {
-    this.setState(prevState => ({
-      page: prevState.page + 1,
-      status: 'pending',
-    }));
+  const changeFilter = e => {
+    setFilter(e.currentTarget.value);
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.page !== this.state.page ||
-      prevState.imgName !== this.state.imgName
-    ) {
-      console.log('~ componentDidUpdate');
-      this.setState({ status: 'pending' });
-      fetch(
-        `https://pixabay.com/api/?q=${this.state.imgName}&page=${this.state.page}&key=29688696-be7a3ad549ffca9d5a732b68f&image_type=photo&orientation=horizontal&per_page=12`
-      )
-        .then(res => {
-          if (res.ok) {
-            return res.json();
-          }
-          return Promise.reject(new Error('Change your search query'));
-        })
-        .then(image => {
-          if (image.totalHits === 0) {
-            this.setState({ status: 'idle' });
-            return toast.error(
-              'Something went wrong. Try changing your search query'
-            );
-          }
-          this.setState(prevState => ({
-            image: [...prevState.image, ...image.hits],
-            status: 'resolved',
-          }));
-        })
-        .catch(error => {
-          return toast.error(error.message);
-        });
-    }
-  }
-
-  render() {
-    const { status, image, imgName } = this.state;
-
-    return (
-      <Container>
-        <ToastContainer autoClose={3000} />
-        <SearchBar onSubmit={this.handleFormSubmit} />
-        {status === 'pending' && (
-          <Container>
-            <Loader />
-          </Container>
-        )}
-
-        {image.length > 0 && (
-          <Container>
-            <ImageGallery images={image} imgAlt={imgName} />
-            {status === 'pending' ? (
-              <Loader />
-            ) : (
-              <Button onClick={this.loadMore} />
-            )}
-          </Container>
-        )}
-      </Container>
+  const getFiltered = () => {
+    const normalised = filter.toLowerCase();
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalised)
     );
-  }
-}
+  };
 
-export default App;
+  const deleteButton = contactId => {
+    setContacts(prevState =>
+      prevState.filter(contact => contact.id !== contactId)
+    );
+  };
+
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
+
+  const filteredContacts = getFiltered();
+
+  return (
+    <>
+      <Container>
+        <h1>Phonebook</h1>
+        <ContactForm onSubmit={formHandler} />
+        <h2>Contacts</h2>
+        <Filter value={filter} onChange={changeFilter} />
+        <ContactList
+          contacts={filteredContacts}
+          onDeleteContact={deleteButton}
+        />
+      </Container>
+    </>
+  );
+}

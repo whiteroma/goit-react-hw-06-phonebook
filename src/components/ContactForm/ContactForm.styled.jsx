@@ -22,7 +22,7 @@ export const FormContainer = styled(Form)`
     padding: 10px;
     background-color: inherit;
     color: white;
-    background-color: #0a78f5;
+    background-color: #0a49f5;
     border-color: inherit;
     margin-top: 20px;
     margin-bottom: 10px;

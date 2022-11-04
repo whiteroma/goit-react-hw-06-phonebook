@@ -1,20 +1,32 @@
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 import { List, ListItem, ListSpan } from './ContactList.styled';
+import { deleteContact } from 'redux/ContactForm/formSlice';
 
-const ContactList = ({ contacts, onDeleteContact }) => (
+export default function ContactList () {
+  const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts)
+  console.log("contacts", contacts);
+
+  const deleteButton = (id) => {
+    dispatch(deleteContact(id))
+  };
+
+  
+  
+  return (
   <List>
-    {contacts.map(({ name, number, id }) => (
-      <ListItem key={id}>
-        {name}
-        <ListSpan>:</ListSpan>
-        {number}
-        <button onClick={() => onDeleteContact(id)}>Delete</button>
-      </ListItem>
-    ))}
+  {contacts.map(({ name, number, id }) => (
+    <ListItem key={id}>
+      {name}
+      <ListSpan>:</ListSpan>
+      {number}
+      <button onClick={() => deleteButton(id)}>Delete</button>
+    </ListItem>
+  ))}
   </List>
-);
+)} 
 
-export default ContactList;
 
 ContactList.propTypes = {
   contacts: PropTypes.arrayOf(

@@ -7,6 +7,7 @@ export const FormContainer = styled(Form)`
   justify-content: center;
   flex-direction: column;
   gap: 10px;
+  color: midnightblue;
 
   & > label {
     display: flex;
@@ -20,7 +21,8 @@ export const FormContainer = styled(Form)`
     align-self: center;
     padding: 10px;
     background-color: inherit;
-    color: inherit;
+    color: white;
+    background-color: #0a78f5;
     border-color: inherit;
     margin-top: 20px;
     margin-bottom: 10px;

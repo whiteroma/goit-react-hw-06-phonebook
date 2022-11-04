@@ -11,11 +11,13 @@ export const ListItem = styled.li`
 display: flex;
   justify-content: space-between;
   align-items: center;
+  color: midnightblue;
 
   &>button {
     padding: 3px;
     background-color: inherit;
-    color: inherit;
+    color: white;
+    background-color: #0a78f5;
     border-color: inherit;
     border-radius: 6px;
     margin-left: 8px;

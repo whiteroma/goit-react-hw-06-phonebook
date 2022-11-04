@@ -1,40 +1,29 @@
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { List, ListItem, ListSpan } from './ContactList.styled';
-import { deleteContact } from 'redux/ContactForm/formSlice';
+import { deleteContact } from 'redux/formSlice';
 
-export default function ContactList () {
+export default function ContactList() {
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts)
-  console.log("contacts", contacts);
+  const contacts = useSelector(state => state.contacts.items);
+  const filter = useSelector(state => state.contacts.query);
+  const items = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
 
-  const deleteButton = (id) => {
-    dispatch(deleteContact(id))
+  const deleteButton = contactId => {
+    dispatch(deleteContact(contactId));
   };
 
-  
-  
   return (
-  <List>
-  {contacts.map(({ name, number, id }) => (
-    <ListItem key={id}>
-      {name}
-      <ListSpan>:</ListSpan>
-      {number}
-      <button onClick={() => deleteButton(id)}>Delete</button>
-    </ListItem>
-  ))}
-  </List>
-)} 
-
-
-ContactList.propTypes = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      number: PropTypes.number.isRequired,
-      id: PropTypes.string.isRequired,
-    }).isRequired
-  ),
-  onDeleteContact: PropTypes.func.isRequired,
-};
+    <List>
+      {items.map(({ name, number, id }) => (
+        <ListItem key={id}>
+          {name}
+          <ListSpan>:</ListSpan>
+          {number}
+          <button onClick={() => deleteButton(id)}>Delete</button>
+        </ListItem>
+      ))}
+    </List>
+  );
+}

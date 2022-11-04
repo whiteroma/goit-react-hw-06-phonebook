@@ -1,11 +1,10 @@
-import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
 import React from 'react';
 import { FormContainer } from './ContactForm.styled';
 import { Formik, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch } from 'react-redux';
-import { addContact } from 'redux/ContactForm/formSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from 'redux/formSlice';
 
 const initialValues = {
   name: '',
@@ -18,11 +17,20 @@ const validationSchema = Yup.object().shape({
 
 const ContactForm = () => {
   const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts.items);
   const nameId = nanoid();
   const numberId = nanoid();
+
   const handleSubmit = (values, { resetForm }) => {
-    dispatch(addContact(values));
-    resetForm();
+    const addedName = contacts
+      .map(contact => contact.name.toLowerCase())
+      .includes(values.name.toLowerCase());
+    if (addedName) {
+      alert(`${values.name} is already in a list`);
+    } else {
+      dispatch(addContact(values));
+      resetForm();
+    }
   };
 
   return (
@@ -61,7 +69,3 @@ const ContactForm = () => {
 };
 
 export default ContactForm;
-
-ContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};

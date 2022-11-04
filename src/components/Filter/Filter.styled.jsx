@@ -6,4 +6,5 @@ export const FilterLabel = styled.label`
   text-align: center;
   font-size: 16px;
   gap: 5px;
+  color: midnightblue;
 `;

@@ -3,13 +3,19 @@ import Filter from './Filter/Filter';
 import ContactForm from './ContactForm/ContactForm';
 import { Container } from './App.styled';
 import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { filterSlice } from 'redux/Filter/filterSlice';
 
 export default function App() {
+  const dispatch = useDispatch();
+  let filter = useSelector(state => state.filter)
+  console.log("filter", filter);
+
   const [contacts, setContacts] = useState(() => {
     return JSON.parse(localStorage.getItem('contacts')) ?? [];
   });
 
-  const [filter, setFilter] = useState('');
+  // const [filter, setFilter] = useState('');
 
   const formHandler = data => {
     const addedName = contacts
@@ -22,9 +28,10 @@ export default function App() {
     }
   };
 
-  const changeFilter = e => {
-    setFilter(e.currentTarget.value);
-  };
+
+  // const changeFilter = e => {
+  //   filter = e.currentTarget.value;
+  // };
 
   const getFiltered = () => {
     const normalised = filter.toLowerCase();
@@ -51,7 +58,7 @@ export default function App() {
         <h1>Phonebook</h1>
         <ContactForm onSubmit={formHandler} />
         <h2>Contacts</h2>
-        <Filter value={filter} onChange={changeFilter} />
+        <Filter />
         <ContactList
           contacts={filteredContacts}
           onDeleteContact={deleteButton}

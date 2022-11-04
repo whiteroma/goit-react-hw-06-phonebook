@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import { FilterLabel } from './Filter.styled';
 
-const Filter = ({ value, onChange }) => (
+const Filter = ({}) => (
   <FilterLabel htmlFor="filter">
-    Find contacts by name{' '}
-    <input type="text" value={value} onChange={onChange} />
+    Find contacts by name
+    <input type="text" name="filter" />
   </FilterLabel>
 );
 
